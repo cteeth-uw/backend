@@ -1,5 +1,7 @@
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
+from fastapi.responses import FileResponse
+import os
 
 class CTeethApp:
     def __init__(self):
@@ -9,7 +11,20 @@ class CTeethApp:
     def _add_routes(self):
         @self.app.get("/scans")
         def get_scans():
-            return {"scans": ["scan1", "scan2", "scan3"]}
+            files = os.listdir("data")
+            return {"scans": files}
+        
+        @self.app.get("/scans/{filename}")
+        def get_scan(filename):
+            files = os.listdir("data")
+            if filename not in files:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                    detail="File Not Found")
+            return FileResponse(
+                "data/"+filename,
+                media_type="application/dicom",
+                filename=filename
+            )
 
     def get_app(self):
         return self.app
