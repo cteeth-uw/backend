@@ -9,12 +9,12 @@ class CTeethApp:
         self._add_routes()
 
     def _add_routes(self):
-        @self.app.get("/scans")
+        @self.app.get("/api/scans")
         def get_scans():
             files = os.listdir("data")
             return {"scans": files}
         
-        @self.app.get("/scans/{filename}")
+        @self.app.get("/api/scans/{filename}")
         def get_scan(filename):
             files = os.listdir("data")
             if filename not in files:
